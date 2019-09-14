@@ -1,0 +1,47 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'docker-host-alpha'
+
+# File to read the alerting rules from.
+rule_files:
+  - "alert.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['localhost:9090']
+  
+  - job_name: 'test_camera'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['camera-ping:8000']
+
+  - job_name: 'snmp'
+    static_configs:
+      - targets:
+        - 192.168.250.1 # Core router management IP.
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp:9116  # The SNMP exporter's real hostname:port.
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager:9093'

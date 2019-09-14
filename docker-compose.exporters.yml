@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  snmpexporter:
+    image: prom/snmp-exporter:latest
+    container_name: snmp
+    expose:
+      - 9116
+    restart: unless-stopped
+    #network_mode: host
+    networks:
+      - monitor-network
