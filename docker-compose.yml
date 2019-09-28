@@ -60,7 +60,7 @@ services:
       - monitor-network
 
   caddy:
-    image: alarcat/caddy
+    image: alarcat/caddy:latest
     container_name: caddy
     ports:
       - "3000:3000" # Grafana
