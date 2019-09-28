@@ -21,7 +21,7 @@ scrape_configs:
   - job_name: 'snmp'
     static_configs:
       - targets:
-        - 192.168.250.1 # Core router management IP.
+        - 192.168.1.2 # Test router IP.
     metrics_path: /snmp
     params:
       module: [if_mib]
